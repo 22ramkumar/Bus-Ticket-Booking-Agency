@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact & Customer Support - RK BUS</title>
+  <meta name="description" content="Reach the 24/7 RK BUS customer helpline, terminal information desk, and traveler assistance team across Tamil Nadu.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="assets/images/logo.jpg">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: ['class', '[data-theme="dark"]'],
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              amber: '#F59E0B',
+              amberHover: '#D97706',
+              surface: '#0F172A',
+              card: '#1E293B',
+              dark: '#090D16'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-brand-dark text-slate-100 antialiased selection:bg-amber-400 selection:text-slate-950">
+
+  <!-- Main Navigation Header -->
+  <header class="sticky top-0 z-40 glass-nav transition-all">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
+      
+      <!-- Logo -->
+      <a href="index.html" class="flex shrink-0 items-center gap-2.5 group">
+        <img src="assets/images/logo.jpg" alt="RK BUS Logo" class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl object-cover border border-amber-400/30 bg-white shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform">
+        <div>
+          <span class="text-xl sm:text-2xl font-black tracking-tight uppercase text-slate-100 flex items-center gap-1">
+            <span>RK</span><span class="text-amber-400">BUS</span>
+          </span>
+          <span class="text-[10px] tracking-widest uppercase text-slate-400 block -mt-1 font-semibold">Tamil Nadu Express</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <nav class="hidden xl:flex flex-1 items-center justify-center gap-5 2xl:gap-7 text-sm font-semibold text-slate-300">
+        <!-- Home Version Dropdown (Matches Image 2) -->
+        <div class="relative group">
+          <button type="button" class="flex items-center gap-1.5 hover:text-amber-400 transition py-2" aria-expanded="false" aria-haspopup="true">
+            <span>Home</span>
+            <i class="bi bi-chevron-down text-[10px] transition-transform duration-200 group-hover:rotate-180"></i>
+          </button>
+
+          <!-- Dropdown Popup Card (Compact Small Size) -->
+          <div class="absolute left-0 top-full pt-1.5 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-1.5 shadow-xl space-y-1">
+              
+              <!-- Home 1 -->
+              <a href="index.html" class="flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/70 transition text-left group/item">
+                <div class="w-7 h-7 rounded-lg bg-amber-500/15 text-amber-500 flex items-center justify-center text-xs shrink-0 group-hover/item:bg-amber-500/25 transition">
+                  <i class="bi bi-bus-front-fill"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <span class="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover/item:text-amber-500 transition block">Home 1</span>
+                  <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">Express Intercity Liners</p>
+                </div>
+              </a>
+
+              <!-- Home 2 -->
+              <a href="home2.html" class="flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/70 transition text-left group/item">
+                <div class="w-7 h-7 rounded-lg bg-emerald-500/15 text-emerald-500 flex items-center justify-center text-xs shrink-0 group-hover/item:bg-emerald-500/25 transition">
+                  <i class="bi bi-compass-fill"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <span class="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover/item:text-amber-500 transition block">Home 2</span>
+                  <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate">Scenic Expeditions & Tourism</p>
+                </div>
+              </a>
+
+            </div>
+          </div>
+        </div>
+
+        <a href="routes.html" class="hover:text-amber-400 transition">Routes & Fares</a>
+        <a href="offers.html" class="hover:text-amber-400 transition">Offers</a>
+        <a href="contact.html" class="text-amber-400 font-bold transition">Contact</a>
+        <a href="index.html#about" class="hover:text-amber-400 transition">About</a>
+        <a href="dashboard.html" class="hover:text-amber-400 transition">Dashboard</a>
+      </nav>
+
+      <!-- Right Controls: RTL Toggle, Theme Toggle, User Auth -->
+      <div class="flex shrink-0 items-center gap-2 sm:gap-2.5">
+        <!-- RTL Toggle (Icon Only) -->
+        <button type="button" class="rtl-toggle-btn" title="Toggle RTL / LTR layout" aria-label="Toggle RTL / LTR layout">
+          <i class="bi bi-arrow-left-right"></i>
+        </button>
+
+        <!-- Theme Toggle (Icon Only) -->
+        <button type="button" class="theme-toggle-btn" title="Toggle Light / Dark mode" aria-label="Toggle Light / Dark mode">
+          <i class="bi bi-sun-fill theme-toggle-icon"></i>
+        </button>
+
+        <!-- User Auth Container -->
+        <div class="flex shrink-0 items-center">
+          <div id="nav-auth-container"></div>
+        </div>
+
+        <!-- Mobile Hamburger Button -->
+        <button type="button" id="mobile-menu-btn" class="xl:hidden h-10 w-10 shrink-0 flex items-center justify-center rounded-xl bg-slate-800 text-slate-200 hover:text-amber-400 hover:bg-slate-700 transition" aria-label="Open menu">
+          <i class="bi bi-list text-2xl"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div id="mobile-drawer" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden transition-opacity">
+    <div class="fixed top-0 right-0 w-80 max-w-full h-full bg-slate-900 border-l border-slate-800 p-6 flex flex-col justify-between overflow-y-auto">
+      <div>
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
+          <div class="flex items-center gap-2">
+            <img src="assets/images/logo.jpg" alt="RK BUS Logo" class="w-8 h-8 rounded-xl object-cover border border-amber-400/30 bg-white">
+            <span class="font-extrabold text-xl uppercase text-slate-100 flex items-center gap-1"><span>RK</span><span class="text-amber-400">BUS</span></span>
+          </div>
+          <button type="button" id="mobile-drawer-close" class="p-2 text-slate-400"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <nav class="space-y-4 text-sm font-semibold">
+          <!-- Homepage Switcher (Matches Image 2) -->
+          <div class="p-2 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-1 mb-2">
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 px-2 block pt-1">Select Homepage</span>
+            <a href="index.html" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-800/80 text-xs font-medium text-slate-300 transition">
+              <span class="flex items-center gap-2"><i class="bi bi-bus-front-fill text-amber-400"></i> Home 1 (Express Liners)</span>
+              <i class="bi bi-arrow-right text-slate-500"></i>
+            </a>
+            <a href="home2.html" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-800/80 text-xs font-medium text-slate-300 transition">
+              <span class="flex items-center gap-2"><i class="bi bi-compass-fill text-emerald-400"></i> Home 2 (Scenic Tourism)</span>
+              <i class="bi bi-arrow-right text-slate-500"></i>
+            </a>
+          </div>
+
+          <a href="routes.html" class="block py-2 text-slate-300">Routes & Fares</a>
+          <a href="offers.html" class="block py-2 text-slate-300">Special Offers</a>
+          <a href="contact.html" class="block py-2 text-amber-400">Help & Support</a>
+        </nav>
+      </div>
+      <div class="pt-6 border-t border-slate-800">
+        <div id="mobile-nav-auth-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page Header -->
+  <section class="py-12 bg-slate-950/60 border-b border-slate-800 text-center">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+      <span class="text-xs font-bold uppercase tracking-widest text-amber-400">We Are Here For You</span>
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-slate-100 mt-2">24/7 Traveler Help & Support</h1>
+      <p class="text-xs sm:text-sm text-slate-400 mt-3 max-w-lg mx-auto leading-relaxed">
+        Need assistance with boarding passes, schedule changes, or corporate charter bookings? Our travel concierge is ready 24 hours a day.
+      </p>
+    </div>
+  </section>
+
+  <!-- Support Channels Strip -->
+  <section class="py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+        <div class="glass-card p-6 rounded-2xl text-center">
+          <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-2xl mx-auto mb-3">
+            <i class="bi bi-telephone-inbound"></i>
+          </div>
+          <h4 class="text-sm font-bold text-slate-100 mb-1">Toll-Free Helpline</h4>
+          <p class="text-xs text-slate-400 mb-2">Available 24/7 for booking aid</p>
+          <a href="tel:+914428557528" class="text-xs font-black text-amber-400 hover:underline">+91 (44) 2855-RKBUS</a>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl text-center">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-2xl mx-auto mb-3">
+            <i class="bi bi-whatsapp"></i>
+          </div>
+          <h4 class="text-sm font-bold text-slate-100 mb-1">WhatsApp Concierge</h4>
+          <p class="text-xs text-slate-400 mb-2">Instant ticket delivery & alerts</p>
+          <a href="#" class="text-xs font-black text-emerald-400 hover:underline">Chat On WhatsApp</a>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl text-center">
+          <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center text-2xl mx-auto mb-3">
+            <i class="bi bi-envelope-at"></i>
+          </div>
+          <h4 class="text-sm font-bold text-slate-100 mb-1">Email Desk</h4>
+          <p class="text-xs text-slate-400 mb-2">Average response time: 25 mins</p>
+          <a href="mailto:support@rkbus.com" class="text-xs font-black text-sky-400 hover:underline">support@rkbus.com</a>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl text-center">
+          <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-2xl mx-auto mb-3">
+            <i class="bi bi-building"></i>
+          </div>
+          <h4 class="text-sm font-bold text-slate-100 mb-1">Headquarters</h4>
+          <p class="text-xs text-slate-400 mb-2">Kilambakkam KCBT Transit Hub</p>
+          <span class="text-xs font-semibold text-slate-300">GST Road, Chennai, TN 600048</span>
+        </div>
+      </div>
+
+      <!-- Contact Form & Terminal Locator -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Form -->
+        <div class="lg:col-span-7 glass-card rounded-2xl p-6 sm:p-8 border border-slate-800">
+          <h3 class="text-xl font-bold text-slate-100 mb-1">Send Us a Message</h3>
+          <p class="text-xs text-slate-400 mb-6">Fill out the form below and an agent will follow up shortly.</p>
+
+          <form id="contact-form" onsubmit="handleContactSubmit(event)" class="space-y-4 text-xs">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="font-bold text-slate-300 block mb-1">Full Name *</label>
+                <input type="text" id="contact-name" required placeholder="Karthik Narayanan" class="w-full form-control-busgo rounded-xl px-3.5 py-2.5 text-xs font-medium">
+              </div>
+              <div>
+                <label class="font-bold text-slate-300 block mb-1">Email Address *</label>
+                <input type="email" id="contact-email" required placeholder="karthik@example.com" class="w-full form-control-busgo rounded-xl px-3.5 py-2.5 text-xs font-medium">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="font-bold text-slate-300 block mb-1">Booking PNR (Optional)</label>
+                <input type="text" id="contact-pnr" placeholder="e.g. BG-784291" class="w-full form-control-busgo rounded-xl px-3.5 py-2.5 text-xs font-mono">
+              </div>
+              <div>
+                <label class="font-bold text-slate-300 block mb-1">Inquiry Category *</label>
+                <select id="contact-cat" class="w-full form-control-busgo rounded-xl px-3.5 py-2.5 text-xs">
+                  <option value="ticket">Ticket Booking & Seat Selection</option>
+                  <option value="cancellation">Cancellation & Refund Status</option>
+                  <option value="lost">Lost Baggage & Luggage Inquiry</option>
+                  <option value="operator">Operator Feedback & Punctuality</option>
+                  <option value="charter">Corporate Group Charter</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="font-bold text-slate-300 block mb-1">Message Details *</label>
+              <textarea id="contact-msg" required rows="4" placeholder="How can our support team assist your journey across Tamil Nadu?" class="w-full form-control-busgo rounded-xl px-3.5 py-2.5 text-xs leading-relaxed"></textarea>
+            </div>
+
+            <button type="submit" class="px-7 py-3 rounded-xl btn-amber font-bold text-xs flex items-center gap-2 shadow-lg shadow-amber-500/20">
+              <i class="bi bi-send-fill"></i>
+              <span>Submit Support Inquiry</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Terminal Locations & Interactive Map Placeholder -->
+        <div class="lg:col-span-5 space-y-6" id="terminals">
+          
+          <div class="glass-card rounded-2xl p-6 border border-slate-800">
+            <h4 class="text-sm font-bold text-slate-100 mb-3 flex items-center gap-2">
+              <i class="bi bi-geo-alt text-amber-400"></i> Primary Tamil Nadu Departure Hubs
+            </h4>
+            <div class="space-y-3 text-xs">
+              <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                <span class="font-bold text-slate-200 block">Chennai - Kilambakkam Bus Terminus (KCBT)</span>
+                <p class="text-slate-400 mt-0.5">GST Road, Kilambakkam (Platforms 1-8 for South & West Bound Express)</p>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                <span class="font-bold text-slate-200 block">Chennai - Koyambedu Omni Bus Stand</span>
+                <p class="text-slate-400 mt-0.5">Opposite Rohini Theatre / Metro, Koyambedu, Chennai</p>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                <span class="font-bold text-slate-200 block">Coimbatore - Gandhipuram Central Omni Bus Stand</span>
+                <p class="text-slate-400 mt-0.5">Cross Cut Road / Dr Nanjappa Road, Gandhipuram, Coimbatore</p>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                <span class="font-bold text-slate-200 block">Madurai - Mattuthavani (MGR Integrated Bus Stand)</span>
+                <p class="text-slate-400 mt-0.5">Melur Road, Mattuthavani, Madurai - 625007</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Map Card -->
+          <div class="glass-card rounded-2xl p-5 border border-slate-800 text-center overflow-hidden relative">
+            <div class="h-44 rounded-xl bg-slate-900 border border-slate-800 flex flex-col items-center justify-center relative overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=600&q=80" alt="Map graphic" class="absolute inset-0 w-full h-full object-cover opacity-20">
+              <i class="bi bi-pin-map-fill text-amber-400 text-3xl mb-1 relative z-10"></i>
+              <span class="text-xs font-bold text-slate-200 relative z-10">Interactive GPS Terminal Map</span>
+              <span class="text-[11px] text-slate-400 relative z-10">Real-time gate tracking available in mobile pass</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-slate-950 border-t border-slate-800 py-12 text-xs text-slate-400">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p>© 2026 RK BUS Agency Inc. All rights reserved.</p>
+      <div class="flex items-center gap-6">
+        <a href="index.html" class="hover:text-amber-400">Home</a>
+        <a href="routes.html" class="hover:text-amber-400">Routes</a>
+        <a href="booking.html?autoseat=true" class="hover:text-amber-400">Book Now</a>
+        <a href="terms.html" class="hover:text-amber-400">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function handleContactSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('contact-name').value;
+      BusGoUI.toast(`Thank you, ${name}! Your inquiry has been logged. Ticket ref: CS-${Math.floor(100000 + Math.random()*900000)}`, 'success', 'Inquiry Received');
+      document.getElementById('contact-form').reset();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traveler Portal - Sign In or Register | RK BUS</title>
+  <meta name="description" content="Sign in to your RK BUS traveler dashboard to manage tickets, view live schedules across Tamil Nadu, and access cancellations and refunds.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="assets/images/logo.jpg">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: ['class', '[data-theme="dark"]'],
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              amber: '#F59E0B',
+              amberHover: '#D97706',
+              surface: '#0F172A',
+              card: '#1E293B',
+              dark: '#090D16'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-brand-dark text-slate-100 antialiased min-h-screen flex flex-col justify-between selection:bg-amber-400 selection:text-slate-950">
+
+  <!-- Top bar with minimal controls -->
+  <div class="p-6 flex items-center justify-between max-w-7xl mx-auto w-full">
+    <a href="index.html" class="flex items-center gap-2.5 group">
+      <img src="assets/images/logo.jpg" alt="RK BUS Logo" class="w-10 h-10 rounded-2xl object-cover border border-amber-400/30 bg-white shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform">
+      <div>
+        <span class="text-xl font-black uppercase text-slate-100 flex items-center gap-1"><span>RK</span><span class="text-amber-400">BUS</span></span>
+        <span class="text-[9px] tracking-widest uppercase text-slate-400 block -mt-1 font-semibold">Tamil Nadu Express</span>
+      </div>
+    </a>
+
+    <div class="flex items-center gap-2.5 text-xs">
+      <button type="button" class="rtl-toggle-btn" title="Toggle RTL / LTR layout" aria-label="Toggle RTL / LTR layout">
+        <i class="bi bi-arrow-left-right"></i>
+      </button>
+      <button type="button" class="theme-toggle-btn" title="Toggle Light / Dark mode" aria-label="Toggle Light / Dark mode">
+        <i class="bi bi-sun-fill theme-toggle-icon"></i>
+      </button>
+      <a href="index.html" class="text-slate-400 hover:text-amber-400 font-semibold transition ml-2">
+        <i class="bi bi-arrow-left"></i> Back to Site
+      </a>
+    </div>
+  </div>
+
+  <!-- Main Auth Box -->
+  <div class="flex-1 flex items-center justify-center px-4 py-8">
+    <div class="glass-card rounded-3xl p-6 sm:p-10 max-w-md w-full border border-slate-800 shadow-2xl relative overflow-hidden">
+      
+      <!-- Status Notice Banner -->
+      <div id="auth-status-banner" class="hidden mb-5 p-3.5 rounded-xl text-xs flex items-center gap-2.5"></div>
+
+      <!-- Top Pill Tabs -->
+      <div class="flex gap-1.5 p-1 bg-slate-950 border border-slate-800 rounded-xl mb-6 text-xs font-bold">
+        <button type="button" id="tab-login-btn" onclick="AuthPortal.switchTab('login')" class="flex-1 py-2 rounded-lg bg-amber-400 text-slate-950 transition">
+          Sign In
+        </button>
+        <button type="button" id="tab-register-btn" onclick="AuthPortal.switchTab('register')" class="flex-1 py-2 rounded-lg text-slate-400 hover:text-slate-100 transition">
+          Create Account
+        </button>
+      </div>
+
+      <!-- Demo Account Quick Access Card -->
+      <div class="bg-amber-500/10 border border-amber-500/25 p-3.5 rounded-xl mb-6 flex items-center justify-between gap-3 text-xs">
+        <div>
+          <span class="font-extrabold text-amber-400 block">Demo Traveler Credentials</span>
+          <span class="text-slate-300 font-mono text-[11px]">ramkumar@rkbus.com • Travel@123</span>
+        </div>
+        <button type="button" onclick="AuthPortal.quickDemoLogin()" class="px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-[11px] shrink-0 shadow transition">
+          1-Click Login
+        </button>
+      </div>
+
+      <!-- Sign In Form -->
+      <form id="form-login" onsubmit="AuthPortal.handleLogin(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="font-bold text-slate-300 block mb-1">Email Address</label>
+          <div class="relative">
+            <input type="email" id="login-email" required placeholder="ramkumar@rkbus.com" value="ramkumar@rkbus.com" class="w-full form-control-busgo rounded-xl pl-9 pr-3 py-2.5 text-xs font-medium">
+            <i class="bi bi-envelope absolute left-3 top-2.5 text-slate-400 text-sm"></i>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="font-bold text-slate-300">Password</label>
+            <button type="button" onclick="AuthPortal.switchTab('forgot')" class="text-amber-400 hover:text-amber-300 font-bold text-[11px]">
+              Forgot Password?
+            </button>
+          </div>
+          <div class="relative">
+            <input type="password" id="login-pass" required placeholder="••••••••" value="Travel@123" class="w-full form-control-busgo rounded-xl pl-9 pr-10 py-2.5 text-xs font-mono">
+            <i class="bi bi-lock absolute left-3 top-2.5 text-slate-400 text-sm"></i>
+            <button type="button" onclick="AuthPortal.togglePassword('login-pass', this)" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-200">
+              <i class="bi bi-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-1">
+          <label class="flex items-center gap-2 cursor-pointer text-slate-400">
+            <input type="checkbox" checked class="w-3.5 h-3.5 accent-amber-400 rounded">
+            <span>Remember this device</span>
+          </label>
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl btn-amber font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 mt-2">
+          <span>Sign In to Dashboard</span>
+          <i class="bi bi-arrow-right"></i>
+        </button>
+      </form>
+
+      <!-- Registration Form (Hidden by default) -->
+      <form id="form-register" onsubmit="AuthPortal.handleRegister(event)" class="hidden space-y-4 text-xs">
+        <div>
+          <label class="font-bold text-slate-300 block mb-1">Full Name *</label>
+          <div class="relative">
+            <input type="text" id="reg-name" required placeholder="Ramkumar R." class="w-full form-control-busgo rounded-xl pl-9 pr-3 py-2.5 text-xs font-medium">
+            <i class="bi bi-person absolute left-3 top-2.5 text-slate-400 text-sm"></i>
+          </div>
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-300 block mb-1">Email Address *</label>
+          <div class="relative">
+            <input type="email" id="reg-email" required placeholder="ramkumar@rkbus.com" class="w-full form-control-busgo rounded-xl pl-9 pr-3 py-2.5 text-xs font-medium">
+            <i class="bi bi-envelope absolute left-3 top-2.5 text-slate-400 text-sm"></i>
+          </div>
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-300 block mb-1">Mobile Phone *</label>
+          <div class="relative">
+            <input type="tel" id="reg-phone" required placeholder="+91 98765 43210" class="w-full form-control-busgo rounded-xl pl-9 pr-3 py-2.5 text-xs font-medium">
+            <i class="bi bi-phone absolute left-3 top-2.5 text-slate-400 text-sm"></i>
+          </div>
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-300 block mb-1">Password *</label>
+          <div class="relative">
+            <input type="password" id="reg-pass" required minlength="6" placeholder="Create secure password" class="w-full form-control-busgo rounded-xl pl-9 pr-10 py-2.5 text-xs font-mono">
+            <i class="bi bi-lock absolute left-3 top-2.5 text-slate-400 text-sm"></i>
+            <button type="button" onclick="AuthPortal.togglePassword('reg-pass', this)" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-200">
+              <i class="bi bi-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl btn-amber font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 mt-2">
+          <span>Create Traveler Account</span>
+          <i class="bi bi-check-circle"></i>
+        </button>
+      </form>
+
+      <!-- Forgot Password Form (Hidden by default) -->
+      <form id="form-forgot" onsubmit="AuthPortal.handleForgot(event)" class="hidden space-y-4 text-xs">
+        <p class="text-slate-400 leading-relaxed">
+          Enter your registered email address to receive password reset instructions.
+        </p>
+
+        <div>
+          <label class="font-bold text-slate-300 block mb-1">Registered Email</label>
+          <div class="relative">
+            <input type="email" id="forgot-email" required placeholder="ramkumar@rkbus.com" class="w-full form-control-busgo rounded-xl pl-9 pr-3 py-2.5 text-xs font-medium">
+            <i class="bi bi-envelope absolute left-3 top-2.5 text-slate-400 text-sm"></i>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl btn-amber font-bold text-xs flex items-center justify-center gap-2 shadow mt-2">
+          <span>Send Reset Link</span>
+        </button>
+
+        <button type="button" onclick="AuthPortal.switchTab('login')" class="w-full text-center text-xs font-bold text-slate-400 hover:text-slate-200 pt-2 block">
+          ← Back to Sign In
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Footer Info -->
+  <footer class="py-6 text-center text-xs text-slate-500">
+    <p>© 2026 RK BUS Agency Inc. 256-Bit Encrypted Authentication.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    const AuthPortal = {
+      switchTab(tab) {
+        const loginTab = document.getElementById('tab-login-btn');
+        const regTab = document.getElementById('tab-register-btn');
+        const loginForm = document.getElementById('form-login');
+        const regForm = document.getElementById('form-register');
+        const forgotForm = document.getElementById('form-forgot');
+
+        if (tab === 'login') {
+          loginTab.className = 'flex-1 py-2 rounded-lg bg-amber-400 text-slate-950 transition';
+          regTab.className = 'flex-1 py-2 rounded-lg text-slate-400 hover:text-slate-100 transition';
+          loginForm.classList.remove('hidden');
+          regForm.classList.add('hidden');
+          forgotForm.classList.add('hidden');
+        } else if (tab === 'register') {
+          regTab.className = 'flex-1 py-2 rounded-lg bg-amber-400 text-slate-950 transition';
+          loginTab.className = 'flex-1 py-2 rounded-lg text-slate-400 hover:text-slate-100 transition';
+          regForm.classList.remove('hidden');
+          loginForm.classList.add('hidden');
+          forgotForm.classList.add('hidden');
+        } else if (tab === 'forgot') {
+          loginForm.classList.add('hidden');
+          regForm.classList.add('hidden');
+          forgotForm.classList.remove('hidden');
+        }
+      },
+
+      togglePassword(inputId, btn) {
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') {
+          input.type = 'text';
+          btn.innerHTML = '<i class="bi bi-eye-slash"></i>';
+        } else {
+          input.type = 'password';
+          btn.innerHTML = '<i class="bi bi-eye"></i>';
+        }
+      },
+
+      quickDemoLogin() {
+        document.getElementById('login-email').value = 'ramkumar@rkbus.com';
+        document.getElementById('login-pass').value = 'Travel@123';
+        const res = BusGoDB.login('ramkumar@rkbus.com', 'Travel@123') || BusGoDB.login('traveler@rkbus.com', 'Travel@123');
+        if (res.success) {
+          BusGoUI.toast(`Welcome back, ${res.user.name}!`, 'success', 'Login Successful');
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 600);
+        }
+      },
+
+      handleLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const pass = document.getElementById('login-pass').value;
+
+        const res = BusGoDB.login(email, pass);
+        if (res.success) {
+          BusGoUI.toast(`Welcome back, ${res.user.name}!`, 'success');
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 600);
+        } else {
+          BusGoUI.toast(res.message, 'error', 'Login Failed');
+        }
+      },
+
+      handleRegister(e) {
+        e.preventDefault();
+        const name = document.getElementById('reg-name').value;
+        const email = document.getElementById('reg-email').value;
+        const phone = document.getElementById('reg-phone').value;
+        const password = document.getElementById('reg-pass').value;
+
+        const res = BusGoDB.register({ name, email, phone, password });
+        if (res.success) {
+          BusGoUI.toast(`Account created! Welcome, ${res.user.name}.`, 'success');
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 600);
+        } else {
+          BusGoUI.toast(res.message, 'error');
+        }
+      },
+
+      handleForgot(e) {
+        e.preventDefault();
+        const email = document.getElementById('forgot-email').value;
+        BusGoUI.toast(`Password reset link sent to ${email}`, 'info');
+        setTimeout(() => {
+          this.switchTab('login');
+        }, 1500);
+      },
+
+      init() {
+        const params = new URLSearchParams(window.location.search);
+        const banner = document.getElementById('auth-status-banner');
+        if (!banner) return;
+        if (params.get('signedOut') === 'true') {
+          banner.className = 'mb-5 p-3.5 rounded-xl bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-semibold flex items-center gap-2.5';
+          banner.innerHTML = '<i class="bi bi-box-arrow-right text-amber-400 text-xl shrink-0"></i><div><p class="font-bold text-amber-200">You have been signed out.</p><p class="text-[11px] text-amber-300/80">Please enter your credentials below to sign in again.</p></div>';
+        } else if (params.get('required') === 'true') {
+          banner.className = 'mb-5 p-3.5 rounded-xl bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-semibold flex items-center gap-2.5';
+          banner.innerHTML = '<i class="bi bi-shield-lock-fill text-amber-400 text-xl shrink-0"></i><div><p class="font-bold text-amber-200">Sign In Required</p><p class="text-[11px] text-amber-300/80">Please sign in to access your traveler dashboard.</p></div>';
+        }
+      }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      AuthPortal.init();
+    });
+  </script>
+</body>
+</html>

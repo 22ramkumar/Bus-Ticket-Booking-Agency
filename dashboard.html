@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traveler Dashboard - RK BUS</title>
+  <meta name="description" content="Manage your booked intercity bus tickets, cancellations, refunds, saved passengers, and travel preferences.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="assets/images/logo.jpg">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: ['class', '[data-theme="dark"]'],
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              amber: '#F59E0B',
+              amberHover: '#D97706',
+              surface: '#0F172A',
+              card: '#1E293B',
+              dark: '#090D16'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-brand-dark text-slate-100 antialiased min-h-screen flex selection:bg-amber-400 selection:text-slate-950">
+
+  <!-- Desktop Sidebar Navigation -->
+  <aside class="w-72 bg-slate-950 border-r border-slate-800 flex flex-col justify-between hidden lg:flex shrink-0 min-h-screen sticky top-0">
+    <div>
+      <!-- Logo -->
+      <div class="h-20 px-6 flex items-center border-b border-slate-800">
+        <a href="index.html" class="flex items-center gap-2.5 group">
+          <img src="assets/images/logo.jpg" alt="RK BUS Logo" class="w-10 h-10 rounded-2xl object-cover border border-amber-400/30 bg-white shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform">
+          <div>
+            <span class="text-xl font-black uppercase text-slate-100 flex items-center gap-1"><span>RK</span><span class="text-amber-400">BUS</span></span>
+            <span class="text-[9px] uppercase tracking-wider text-slate-400 block font-bold">Traveler Dashboard</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- User Mini Profile -->
+      <div class="p-5 border-b border-slate-800 bg-slate-900/40">
+        <div class="flex items-center gap-3">
+          <img src="assets/images/avatar-ramkumar.jpg" alt="Traveler Avatar" class="user-display-avatar w-11 h-11 rounded-full object-cover border-2 border-amber-400 shadow">
+          <div class="min-w-0">
+            <h4 class="user-display-name text-sm font-bold text-slate-100 truncate">Ramkumar R.</h4>
+            <p class="user-display-email text-xs text-slate-400 truncate">ramkumar@rkbus.com</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="p-4 space-y-1.5 text-xs font-semibold">
+        <a href="dashboard.html?tab=overview" data-tab="overview" class="dashboard-nav-link active flex items-center gap-3 px-4 py-3 rounded-xl bg-amber-400 text-slate-950 font-bold shadow-md transition">
+          <i class="bi bi-speedometer2 text-base"></i>
+          <span>Overview</span>
+        </a>
+        <a href="booking.html?autoseat=true" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-900 transition">
+          <i class="bi bi-search text-base text-amber-400"></i>
+          <span>Search & Book</span>
+        </a>
+        <a href="dashboard.html?tab=tickets" data-tab="tickets" class="dashboard-nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-900 transition">
+          <i class="bi bi-ticket-perforated text-base text-amber-400"></i>
+          <span>My Tickets</span>
+        </a>
+        <a href="dashboard.html?tab=cancellations" data-tab="cancellations" class="dashboard-nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-900 transition">
+          <i class="bi bi-arrow-counterclockwise text-base text-amber-400"></i>
+          <span>Cancellations & Refunds</span>
+        </a>
+        <a href="dashboard.html?tab=offers" data-tab="offers" class="dashboard-nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-900 transition">
+          <i class="bi bi-tag text-base text-amber-400"></i>
+          <span>Offers & Vouchers</span>
+        </a>
+        <a href="dashboard.html?tab=profile" data-tab="profile" class="dashboard-nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-900 transition">
+          <i class="bi bi-person-gear text-base text-amber-400"></i>
+          <span>Profile & Passengers</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Bottom Logout & Main Site Link -->
+    <div class="p-4 border-t border-slate-800 space-y-2">
+      <a href="index.html" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900 transition">
+        <i class="bi bi-arrow-left"></i> Return to Main Website
+      </a>
+      <button type="button" onclick="BusGoUI.handleLogout()" class="w-full text-left flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-rose-400 hover:bg-rose-500/10 transition">
+        <i class="bi bi-box-arrow-right"></i> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <div class="flex-1 flex flex-col min-w-0">
+    
+    <!-- Top Bar -->
+    <header class="h-20 glass-nav border-b border-slate-800 px-4 sm:px-8 flex items-center justify-between gap-4 sticky top-0 z-30">
+      
+      <!-- Mobile Toggle & Title -->
+      <div class="flex items-center gap-3">
+        <button type="button" id="mobile-sidebar-toggle" class="lg:hidden p-2 rounded-xl bg-slate-800 text-slate-200">
+          <i class="bi bi-list text-xl"></i>
+        </button>
+        <h2 class="text-lg font-black text-slate-100">Traveler Portal</h2>
+      </div>
+
+      <!-- Controls & Quick Actions -->
+      <div class="flex items-center gap-2.5">
+        <!-- RTL Toggle (Icon Only) -->
+        <button type="button" class="rtl-toggle-btn" title="Toggle RTL / LTR layout" aria-label="Toggle RTL / LTR layout">
+          <i class="bi bi-arrow-left-right"></i>
+        </button>
+
+        <!-- Theme Toggle (Icon Only) -->
+        <button type="button" class="theme-toggle-btn" title="Toggle Light / Dark mode" aria-label="Toggle Light / Dark mode">
+          <i class="bi bi-sun-fill theme-toggle-icon"></i>
+        </button>
+
+        <!-- Notifications Dropdown -->
+        <div class="relative group">
+          <button type="button" class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 hover:border-amber-400 text-slate-300 flex items-center justify-center transition relative">
+            <i class="bi bi-bell"></i>
+            <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+          </button>
+          <div class="absolute right-0 mt-2 w-80 p-4 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-800 mb-3">
+              <span class="text-xs font-bold text-slate-200">Trip Notifications</span>
+              <span class="text-[10px] text-amber-400 font-bold cursor-pointer" onclick="BusGoDB.markNotificationsRead(); BusGoUI.toast('All marked as read', 'info')">Mark read</span>
+            </div>
+            <div class="space-y-2.5 text-xs" id="dashboard-notif-list">
+              <div class="p-2.5 rounded-xl bg-slate-800/60 border border-slate-700/60">
+                <span class="font-bold text-slate-200 block">Chennai → Coimbatore Tomorrow</span>
+                <p class="text-[11px] text-slate-400 mt-0.5">Departs at 09:30 PM from Kilambakkam KCBT Gate 4.</p>
+              </div>
+              <div class="p-2.5 rounded-xl bg-slate-800/60 border border-slate-700/60">
+                <span class="font-bold text-emerald-400 block">Refund Credited</span>
+                <p class="text-[11px] text-slate-400 mt-0.5">Refund of ₹785.00 for ticket BG-491720 completed.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <a href="booking.html?autoseat=true" class="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl btn-amber font-bold text-xs shadow-md">
+          <i class="bi bi-plus-lg"></i> Book Trip
+        </a>
+      </div>
+
+    </header>
+
+    <!-- Mobile Drawer for Dashboard -->
+    <div id="mobile-dash-drawer" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden lg:hidden">
+      <div class="fixed top-0 left-0 w-72 max-w-full h-full bg-slate-900 border-r border-slate-800 p-6 flex flex-col justify-between overflow-y-auto">
+        <div>
+          <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
+            <span class="font-extrabold text-lg text-slate-100">Menu</span>
+            <button type="button" id="mobile-dash-drawer-close" class="p-2 text-slate-400">
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+          <nav class="space-y-3 text-xs font-semibold">
+            <a href="dashboard.html?tab=overview" onclick="Dashboard.switchTab('overview')" class="block py-2 text-amber-400">📊 Overview</a>
+            <a href="booking.html?autoseat=true" class="block py-2 text-slate-300">🔍 Search & Book</a>
+            <a href="dashboard.html?tab=tickets" onclick="Dashboard.switchTab('tickets')" class="block py-2 text-slate-300">🎫 My Tickets</a>
+            <a href="dashboard.html?tab=cancellations" onclick="Dashboard.switchTab('cancellations')" class="block py-2 text-slate-300">🔄 Cancellations & Refunds</a>
+            <a href="dashboard.html?tab=offers" onclick="Dashboard.switchTab('offers')" class="block py-2 text-slate-300">🏷️ Offers & Promos</a>
+            <a href="dashboard.html?tab=profile" onclick="Dashboard.switchTab('profile')" class="block py-2 text-slate-300">👤 Profile & Passengers</a>
+          </nav>
+        </div>
+        <div class="pt-6 border-t border-slate-800">
+          <button type="button" onclick="BusGoUI.handleLogout()" class="w-full text-left py-2 text-xs font-bold text-rose-400">
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="p-4 sm:p-8 flex-1 max-w-7xl w-full mx-auto" id="dashboard-main-content">
+      <!-- Injected dynamically by js/dashboard.js -->
+    </main>
+
+  </div>
+
+  <!-- Modals -->
+
+  <!-- View Ticket Modal -->
+  <div id="view-ticket-modal" class="busgo-modal-backdrop">
+    <div class="busgo-modal-content w-full max-w-2xl">
+      <div id="view-ticket-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Cancellation Modal -->
+  <div id="cancel-modal" class="busgo-modal-backdrop">
+    <div class="busgo-modal-content w-full max-w-lg">
+      <div id="cancel-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Add Passenger Modal -->
+  <div id="passenger-modal" class="busgo-modal-backdrop">
+    <div class="busgo-modal-content w-full max-w-md">
+      <div id="passenger-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script>
+    // Mobile drawer controls for dashboard
+    document.getElementById('mobile-sidebar-toggle')?.addEventListener('click', () => {
+      document.getElementById('mobile-dash-drawer')?.classList.remove('hidden');
+    });
+    document.getElementById('mobile-dash-drawer-close')?.addEventListener('click', () => {
+      document.getElementById('mobile-dash-drawer')?.classList.add('hidden');
+    });
+  </script>
+</body>
+</html>

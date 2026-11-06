@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Route Not Found | RK BUS</title>
+  <meta name="description" content="This bus route does not exist. Return to RK BUS homepage or search popular intercity routes across Tamil Nadu.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="assets/images/logo.jpg">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: ['class', '[data-theme="dark"]'],
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              amber: '#F59E0B',
+              amberHover: '#D97706',
+              surface: '#0F172A',
+              card: '#1E293B',
+              dark: '#090D16'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-brand-dark text-slate-100 antialiased min-h-screen flex flex-col justify-between selection:bg-amber-400 selection:text-slate-950">
+
+  <!-- Minimal Nav -->
+  <header class="p-6 max-w-7xl mx-auto w-full flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-2.5 group">
+      <img src="assets/images/logo.jpg" alt="RK BUS Logo" class="w-10 h-10 rounded-2xl object-cover border border-amber-400/30 bg-white shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform">
+      <div>
+        <span class="text-xl font-black uppercase text-slate-100 flex items-center gap-1"><span>RK</span><span class="text-amber-400">BUS</span></span>
+        <span class="text-[9px] tracking-widest uppercase text-slate-400 block -mt-1 font-semibold">Tamil Nadu Express</span>
+      </div>
+    </a>
+    <div class="flex items-center gap-2.5 text-xs">
+      <!-- RTL Toggle (Icon Only) -->
+      <button type="button" class="rtl-toggle-btn" title="Toggle RTL / LTR layout" aria-label="Toggle RTL / LTR layout">
+        <i class="bi bi-arrow-left-right"></i>
+      </button>
+      <!-- Theme Toggle (Icon Only) -->
+      <button type="button" class="theme-toggle-btn" title="Toggle Light / Dark mode" aria-label="Toggle Light / Dark mode">
+        <i class="bi bi-sun-fill theme-toggle-icon"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- 404 Hero -->
+  <main class="flex-1 flex items-center justify-center px-4 py-12">
+    <div class="max-w-md w-full text-center glass-card rounded-3xl p-8 sm:p-12 border border-slate-800 shadow-2xl">
+      
+      <!-- Animated Logo -->
+      <div class="relative w-24 h-24 mx-auto mb-6">
+        <img src="assets/images/logo.jpg" alt="RK BUS Logo" class="w-24 h-24 rounded-3xl object-cover border-2 border-amber-400/40 shadow-xl shadow-amber-500/20 animate-bounce bg-white p-1">
+        <div class="absolute -bottom-2 -right-2 px-2 py-0.5 rounded bg-rose-500 text-white font-black text-xs">
+          404
+        </div>
+      </div>
+
+      <h1 class="text-3xl font-black text-slate-100 mb-2">Route Not Found!</h1>
+      <p class="text-xs text-slate-400 leading-relaxed mb-6">
+        It looks like this bus took an unexpected detour or the scheduled stop has moved. Don't worry, we can get you back on track!
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 text-xs font-bold">
+        <a href="index.html" class="w-full sm:w-auto px-5 py-3 rounded-xl btn-amber flex items-center justify-center gap-1.5">
+          <i class="bi bi-house-door-fill"></i> Return Home
+        </a>
+        <a href="routes.html" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center justify-center gap-1.5">
+          <i class="bi bi-signpost-2"></i> Browse Routes
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="py-6 text-center text-xs text-slate-500">
+    <p>© 2026 RK BUS Agency Inc. Need help? Call +91 44 2855-RKBUS (24x7 Helpdesk)</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
