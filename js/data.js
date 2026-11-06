@@ -77,7 +77,7 @@ const DEFAULT_POPULAR_ROUTES = [
     rating: 4.85,
     reviews: 2890,
     tag: "Temple City Express",
-    image: "assets/images/madurai-meenakshi-temple.jpg"
+    image: "assets/images/madurai-meenakshi-night.jpg"
   },
   {
     id: "route-cbe-ooty",
@@ -91,7 +91,7 @@ const DEFAULT_POPULAR_ROUTES = [
     rating: 4.95,
     reviews: 4120,
     tag: "Scenic Hill Route",
-    image: "assets/images/ooty-welcome-arch.jpg"
+    image: "assets/images/ooty-toy-train.jpg"
   },
   {
     id: "route-che-try",
