@@ -14,6 +14,7 @@ const BusGoUI = {
     this.initModals();
     this.initAccordions();
     this.initVideoPlayer();
+    this.initPrintContainer();
   },
 
   // 1. Theme Management (Default Dark)
@@ -194,7 +195,7 @@ const BusGoUI = {
     BusGoDB.logout();
     this.toast('Signed out successfully. Please sign in to continue.', 'info');
     setTimeout(() => {
-      window.location.href = 'login.html?signedOut=true';
+      window.location.href = 'login.html';
     }, 500);
   },
 
@@ -439,6 +440,298 @@ const BusGoUI = {
       toastEl.classList.add('hide');
       setTimeout(() => toastEl.remove(), 250);
     }, 3500);
+  },
+
+  // 11. Single-Sheet Professional Ticket Engine
+  initPrintContainer() {
+    if (!document.getElementById('rk-print-container')) {
+      const container = document.createElement('div');
+      container.id = 'rk-print-container';
+      document.body.appendChild(container);
+    }
+
+    window.addEventListener('beforeprint', () => {
+      const printContainer = document.getElementById('rk-print-container');
+      if (printContainer && (!printContainer.innerHTML || printContainer.innerHTML.trim() === '')) {
+        const bookings = typeof BusGoDB !== 'undefined' ? BusGoDB.getBookings() : [];
+        if (bookings && bookings.length > 0) {
+          printContainer.innerHTML = this.generateTicketHTML(bookings[0], true);
+        }
+      }
+    });
+  },
+
+  generateTicketHTML(booking, isPrintOnly = false) {
+    if (!booking) return '';
+
+    const formattedBookedDate = booking.bookedAt 
+      ? new Date(booking.bookedAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+      : new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+
+    const calcReporting = (depTime) => {
+      try {
+        const match = (depTime || '').match(/(\d+):(\d+)\s*(AM|PM)/i);
+        if (!match) return depTime;
+        let h = parseInt(match[1]);
+        let m = parseInt(match[2]);
+        const ampm = match[3].toUpperCase();
+        m -= 15;
+        if (m < 0) {
+          m += 60;
+          h -= 1;
+          if (h < 1) h = 12;
+        }
+        const mm = m < 10 ? '0' + m : m;
+        return `${h}:${mm} ${ampm}`;
+      } catch (e) {
+        return depTime;
+      }
+    };
+
+    const generateBarcode = (text) => {
+      let rects = '';
+      let x = 4;
+      const str = String(text || 'RKBUS');
+      for (let i = 0; i < str.length; i++) {
+        const code = str.charCodeAt(i);
+        const w1 = (code % 3) + 1.2;
+        const w2 = ((code * 2) % 3) + 1;
+        rects += `<rect x="${x.toFixed(1)}" y="0" width="${w1.toFixed(1)}" height="26" fill="#0f172a" />`;
+        x += w1 + 1.8;
+        rects += `<rect x="${x.toFixed(1)}" y="0" width="${w2.toFixed(1)}" height="26" fill="#0f172a" />`;
+        x += w2 + 1.8;
+      }
+      return `<svg viewBox="0 0 ${Math.ceil(x + 4)} 28" style="height: 22px; width: 140px;" preserveAspectRatio="none">${rects}</svg>`;
+    };
+
+    const containerClasses = isPrintOnly
+      ? 'ticket-print-sheet'
+      : 'ticket-modal-card p-4 sm:p-5 rounded-2xl max-w-3xl mx-auto shadow-2xl';
+
+    const bgSheet = 'background: #ffffff !important; color: #0f172a !important; border: 1.5px solid #cbd5e1;';
+    const cardBg = 'background: #f8fafc; border: 1.5px solid #e2e8f0;';
+    const textMuted = 'color: #475569;';
+    const textSub = 'color: #64748b;';
+    const textDark = 'color: #0f172a;';
+    const textBrand = 'color: #b45309;';
+    const textGreen = 'color: #047857;';
+
+    const totalFare = booking.fareBreakdown?.totalFare ?? 0;
+    const baseFare = booking.fareBreakdown?.baseFare ?? totalFare;
+    const tax = booking.fareBreakdown?.tax ?? 0;
+    const discount = booking.fareBreakdown?.discount ?? 0;
+
+    return `
+      <div class="${containerClasses}" style="${bgSheet}">
+        
+        <!-- Header Strip with Logo -->
+        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #f59e0b; padding-bottom: 8px; margin-bottom: 10px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <img src="assets/images/logo.jpg" alt="RK BUS Logo" style="width: 46px; height: 46px; border-radius: 10px; object-fit: cover; border: 1.5px solid #f59e0b; background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); shrink-0;">
+            <div>
+              <div style="font-size: 17px; font-weight: 900; letter-spacing: 0.5px; ${textDark} line-height: 1.2;">
+                RK BUS <span style="color: #b45309;">EXPRESS</span>
+              </div>
+              <div style="font-size: 9.5px; font-weight: 800; ${textMuted} letter-spacing: 0.5px; text-transform: uppercase;">
+                Tamil Nadu Intercity Luxury Liners • Official Boarding Pass
+              </div>
+              <div style="font-size: 8.5px; font-weight: 600; ${textSub}">
+                GSTIN: 33AAACR8842K1ZX • 24x7 Helpline: +91 98765 43210 • support@rkbus.com
+              </div>
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <span style="display: inline-block; background: #ecfdf5; color: #047857; border: 1.5px solid #6ee7b7; font-size: 9.5px; font-weight: 800; padding: 2px 8px; border-radius: 9999px; text-transform: uppercase;">
+              ✓ ${booking.status === 'Cancelled' ? 'Cancelled' : 'Confirmed'}
+            </span>
+            <div style="font-family: monospace; font-size: 15px; font-weight: 900; ${textBrand} margin-top: 2px; letter-spacing: 0.8px;">
+              ${booking.pnr}
+            </div>
+            <div style="font-size: 8.5px; font-weight: 700; ${textMuted}">
+              Ticket #: TKT-${booking.pnr.replace(/[^0-9]/g, '') || '784291'} • Booked: ${formattedBookedDate}
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Journey Corridor Strip -->
+        <div style="${cardBg} border-radius: 8px; padding: 10px 14px; margin-bottom: 8px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px;">
+          <div>
+            <div style="font-size: 8.5px; text-transform: uppercase; font-weight: 800; ${textSub} letter-spacing: 0.5px;">ORIGIN</div>
+            <div style="font-size: 14px; font-weight: 900; ${textDark}">${booking.from}</div>
+            <div style="font-size: 12px; font-weight: 900; ${textBrand}">${booking.departureTime}</div>
+            <div style="font-size: 9.5px; font-weight: 700; color: #334155;">Travel Date: ${booking.departureDate}</div>
+          </div>
+          <div style="text-align: center; padding: 0 10px;">
+            <span style="font-size: 9px; font-weight: 800; background: #e2e8f0; color: #0f172a; padding: 2px 8px; border-radius: 9999px;">
+              ${booking.duration || 'Direct'}
+            </span>
+            <div style="color: #d97706; font-size: 13px; margin: 2px 0;">────── 🚍 ──────></div>
+            <div style="font-size: 9px; font-weight: 800; color: #334155;">${booking.operator}</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 8.5px; text-transform: uppercase; font-weight: 800; ${textSub} letter-spacing: 0.5px;">DESTINATION</div>
+            <div style="font-size: 14px; font-weight: 900; ${textDark}">${booking.to}</div>
+            <div style="font-size: 12px; font-weight: 900; ${textGreen}">${booking.arrivalTime}</div>
+            <div style="font-size: 9.5px; font-weight: 700; color: #334155;">Drop: Next Morning</div>
+          </div>
+        </div>
+
+        <!-- Bus & Seat Details Strip -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 8px; font-size: 10px;">
+          <div style="${cardBg} border-radius: 6px; padding: 6px 8px;">
+            <span style="font-size: 8px; text-transform: uppercase; font-weight: 800; ${textSub} display: block;">COACH / BUS TYPE</span>
+            <strong style="font-size: 10px; font-weight: 800; ${textDark}">${booking.busName || booking.busType}</strong>
+          </div>
+          <div style="${cardBg} border-radius: 6px; padding: 6px 8px;">
+            <span style="font-size: 8px; text-transform: uppercase; font-weight: 800; ${textSub} display: block;">SEAT NUMBER(S)</span>
+            <strong style="font-size: 12px; font-weight: 900; ${textBrand}">${booking.seats.join(', ')}</strong>
+          </div>
+          <div style="${cardBg} border-radius: 6px; padding: 6px 8px;">
+            <span style="font-size: 8px; text-transform: uppercase; font-weight: 800; ${textSub} display: block;">BOARDING PLATFORM</span>
+            <strong style="font-size: 10px; font-weight: 800; ${textDark}">Bay 4 • KCBT Concourse</strong>
+          </div>
+          <div style="${cardBg} border-radius: 6px; padding: 6px 8px;">
+            <span style="font-size: 8px; text-transform: uppercase; font-weight: 800; ${textSub} display: block;">REPORTING TIME</span>
+            <strong style="font-size: 10px; font-weight: 900; ${textBrand}">${calcReporting(booking.departureTime)} (15m Prior)</strong>
+          </div>
+        </div>
+
+        <!-- Boarding & Dropping Point Breakdown -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px;">
+          <div style="${cardBg} border-radius: 6px; padding: 7px 9px; font-size: 9.5px;">
+            <div style="font-size: 8.5px; font-weight: 900; text-transform: uppercase; ${textBrand} margin-bottom: 2px;">
+              📍 BOARDING LOCATION
+            </div>
+            <div style="font-weight: 800; ${textDark} font-size: 10.5px;">${booking.boardingPoint}</div>
+            <div style="font-size: 8px; font-weight: 600; ${textMuted} margin-top: 1px;">
+              Reporting strictly 15 minutes before departure. Terminal Desk: +91 98765 00111
+            </div>
+          </div>
+          <div style="${cardBg} border-radius: 6px; padding: 7px 9px; font-size: 9.5px;">
+            <div style="font-size: 8.5px; font-weight: 900; text-transform: uppercase; ${textGreen} margin-bottom: 2px;">
+              🏁 DROPPING LOCATION
+            </div>
+            <div style="font-weight: 800; ${textDark} font-size: 10.5px;">${booking.droppingPoint}</div>
+            <div style="font-size: 8px; font-weight: 600; ${textMuted} margin-top: 1px;">
+              Drop at Central Terminal Omni stand. Transit & taxis available 24/7.
+            </div>
+          </div>
+        </div>
+
+        <!-- Passenger Table -->
+        <div style="margin-bottom: 8px; overflow: hidden; border-radius: 6px; border: 1.5px solid #cbd5e1; background: #ffffff;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 9.5px; text-align: left;">
+            <thead>
+              <tr style="background: #f1f5f9; ${textDark} font-weight: 800; border-bottom: 1.5px solid #cbd5e1; font-size: 8px; text-transform: uppercase;">
+                <th style="padding: 5px 7px;">#</th>
+                <th style="padding: 5px 7px;">Passenger Name</th>
+                <th style="padding: 5px 7px;">Age & Gender</th>
+                <th style="padding: 5px 7px;">Seat</th>
+                <th style="padding: 5px 7px;">Berth Type</th>
+                <th style="padding: 5px 7px; text-align: right;">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${(booking.passengers || []).map((p, idx) => `
+                <tr style="border-bottom: 1px solid #e2e8f0; background: #ffffff;">
+                  <td style="padding: 5px 7px; font-weight: 700; ${textSub}">${idx + 1}</td>
+                  <td style="padding: 5px 7px; font-weight: 800; color: #0f172a !important;">${p.name}</td>
+                  <td style="padding: 5px 7px; font-weight: 600; color: #334155 !important;">${p.age} yrs • ${p.gender}</td>
+                  <td style="padding: 5px 7px; font-weight: 900; color: #b45309 !important;">${p.seat}</td>
+                  <td style="padding: 5px 7px; font-weight: 600; color: #334155 !important;">${p.seat.startsWith('U') ? 'Upper Sleeper' : 'Lower Sleeper'} Window</td>
+                  <td style="padding: 5px 7px; text-align: right; font-weight: 800; color: #047857 !important;">Confirmed</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Fare Breakdown & Barcode/QR Section -->
+        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 8px; align-items: center; margin-bottom: 8px; padding: 7px 9px; ${cardBg} border-radius: 6px;">
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 9px; ${textMuted} margin-bottom: 1px;">
+              <span>Base Fare (${(booking.passengers || []).length} Passenger${(booking.passengers || []).length > 1 ? 's' : ''}):</span>
+              <span style="font-weight: 800; ${textDark}">₹${baseFare.toFixed(2)}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 9px; ${textMuted} margin-bottom: 1px;">
+              <span>Integrated GST (5%):</span>
+              <span style="font-weight: 800; ${textDark}">₹${tax.toFixed(2)}</span>
+            </div>
+            ${discount > 0 ? `
+              <div style="display: flex; justify-content: space-between; font-size: 9px; color: #047857; font-weight: 800; margin-bottom: 1px;">
+                <span>Discount Applied (${booking.fareBreakdown?.promoCode || 'PROMO'}):</span>
+                <span>-₹${discount.toFixed(2)}</span>
+              </div>
+            ` : ''}
+            <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 900; ${textDark} border-top: 1px dashed #cbd5e1; padding-top: 3px; margin-top: 2px;">
+              <span>Total Amount Paid:</span>
+              <span style="${textBrand}">₹${totalFare.toFixed(2)}</span>
+            </div>
+            <div style="font-size: 8px; ${textMuted} margin-top: 1px; font-weight: 600;">
+              Payment Status: <strong style="color: #047857; font-weight: 900;">PAID ONLINE</strong> (${booking.paymentMethod || 'UPI / NetBanking'}) • Ref: TXN-${booking.pnr.replace(/[^0-9]/g, '') || '98421'}
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px; text-align: center;">
+            <div>
+              ${generateBarcode(booking.pnr)}
+              <div style="font-family: monospace; font-size: 8px; font-weight: 800; ${textDark} margin-top: 1px; letter-spacing: 0.5px;">
+                * ${booking.pnr} *
+              </div>
+            </div>
+            <div>
+              <img src="${booking.qrCode || 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + booking.pnr}" alt="QR" style="width: 48px; height: 48px; background: #ffffff; padding: 2px; border-radius: 6px; border: 1px solid #cbd5e1;">
+              <span style="font-size: 7.5px; font-weight: 700; color: #334155; display: block; margin-top: 1px;">Gate Entry QR</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Travel Policy Instructions in High-Contrast Box -->
+        <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; padding: 6px 10px; margin-bottom: 6px; font-size: 8px; line-height: 1.35;">
+          <div style="font-weight: 900; color: #92400e; text-transform: uppercase; font-size: 8px; margin-bottom: 3px; letter-spacing: 0.5px;">
+            ⚠️ IMPORTANT TRAVEL GUIDELINES:
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3px 10px; color: #78350f; font-weight: 600;">
+            <div>• <strong style="color: #92400e; font-weight: 900;">Photo ID Mandatory:</strong> Original Government ID (Aadhaar / Voter ID / DL) required during boarding.</div>
+            <div>• <strong style="color: #92400e; font-weight: 900;">Reporting Time:</strong> Please report at boarding point 15 mins prior. Coach departs sharply on schedule.</div>
+            <div>• <strong style="color: #92400e; font-weight: 900;">Luggage Allowance:</strong> Max 23 kg check-in baggage per seat in lower luggage bay + 1 handbag inside cabin.</div>
+            <div>• <strong style="color: #92400e; font-weight: 900;">Cancellations & Help:</strong> Easy cancellation via Dashboard. 24x7 WhatsApp support: +91 98765 43210.</div>
+          </div>
+        </div>
+
+        <!-- Footer Signoff -->
+        <div style="text-align: center; margin-top: 4px; padding-top: 3px; border-top: 1px dashed #cbd5e1; font-size: 7.5px; font-weight: 700; color: #475569;">
+          Computer-generated official travel document & tax invoice • RK BUS TAMIL NADU EXPRESS • Have a pleasant journey!
+        </div>
+
+      </div>
+    `;
+  },
+
+  printTicket(pnr) {
+    let booking = null;
+    if (typeof pnr === 'object' && pnr !== null) {
+      booking = pnr;
+    } else if (typeof BusGoDB !== 'undefined') {
+      const bookings = BusGoDB.getBookings();
+      booking = bookings.find(b => b.pnr === pnr);
+    }
+    if (!booking) {
+      this.toast('Unable to find ticket details to print', 'error');
+      return;
+    }
+
+    let printContainer = document.getElementById('rk-print-container');
+    if (!printContainer) {
+      printContainer = document.createElement('div');
+      printContainer.id = 'rk-print-container';
+      document.body.appendChild(printContainer);
+    }
+
+    printContainer.innerHTML = this.generateTicketHTML(booking, true);
+
+    setTimeout(() => {
+      window.print();
+    }, 80);
   }
 };
 

@@ -1172,80 +1172,19 @@ const BookingEngine = {
         <p class="text-xs text-slate-400 mb-6">Your e-ticket has been sent to <span class="text-amber-400 font-bold">${booking.contact?.email || 'your email'}</span> and saved to your traveler dashboard.</p>
 
         <!-- Printable E-Ticket Card -->
-        <div id="printable-ticket" class="glass-card-elevated p-6 rounded-2xl border border-slate-700 text-left max-w-xl mx-auto mb-8 relative overflow-hidden">
-          
-          <!-- Ticket Header Strip -->
-          <div class="flex items-center justify-between pb-4 border-b border-slate-700/80 mb-5">
-            <div>
-              <div class="flex items-center gap-3">
-                <img src="assets/images/logo.jpg" alt="RK BUS Logo" class="w-10 h-10 rounded-xl object-cover border border-amber-400/40 bg-white shadow">
-                <span class="font-extrabold text-lg uppercase text-slate-100">RK BUS Express</span>
-              </div>
-              <p class="text-[11px] text-slate-400">Boarding Pass & Tax Invoice (Tamil Nadu)</p>
-            </div>
-            <div class="text-right">
-              <span class="text-[10px] text-slate-400 uppercase tracking-widest block">PNR NUMBER</span>
-              <span class="text-base font-mono font-black text-amber-400 tracking-wider">${booking.pnr}</span>
-            </div>
-          </div>
-
-          <!-- Route & Timings -->
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
-            <div>
-              <span class="text-[10px] text-slate-400 uppercase block">From</span>
-              <p class="text-sm font-bold text-slate-100">${booking.from}</p>
-              <p class="text-xs text-amber-400 font-semibold">${booking.departureTime}</p>
-            </div>
-            <div>
-              <span class="text-[10px] text-slate-400 uppercase block">To</span>
-              <p class="text-sm font-bold text-slate-100">${booking.to}</p>
-              <p class="text-xs text-slate-300 font-semibold">${booking.arrivalTime}</p>
-            </div>
-            <div>
-              <span class="text-[10px] text-slate-400 uppercase block">Travel Date</span>
-              <p class="text-xs font-bold text-slate-100">${booking.departureDate}</p>
-              <p class="text-[11px] text-slate-400">${booking.duration}</p>
-            </div>
-            <div>
-              <span class="text-[10px] text-slate-400 uppercase block">Seat(s)</span>
-              <p class="text-sm font-black text-amber-400">${booking.seats.join(', ')}</p>
-              <p class="text-[10px] text-emerald-400 font-semibold">Confirmed</p>
-            </div>
-          </div>
-
-          <!-- Boarding Point & Operator -->
-          <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 text-xs mb-5 space-y-1">
-            <p class="text-slate-300"><span class="text-slate-400 font-bold">Operator:</span> ${booking.operator} (${booking.busType})</p>
-            <p class="text-slate-300"><span class="text-slate-400 font-bold">Boarding Point:</span> ${booking.boardingPoint}</p>
-            <p class="text-slate-300"><span class="text-slate-400 font-bold">Dropping Point:</span> ${booking.droppingPoint}</p>
-          </div>
-
-          <!-- Passenger List & QR Code -->
-          <div class="flex items-center justify-between gap-4 pt-3 border-t border-slate-700/80">
-            <div>
-              <span class="text-[10px] text-slate-400 uppercase block mb-1">Passenger(s)</span>
-              ${booking.passengers.map(p => `
-                <p class="text-xs font-semibold text-slate-200">${p.name} (${p.gender}, ${p.age}) - Seat ${p.seat}</p>
-              `).join('')}
-              <p class="text-xs font-bold text-slate-300 mt-2">Total Paid: <span class="text-amber-400">₹${booking.fareBreakdown.totalFare.toFixed(2)}</span></p>
-            </div>
-            <div class="shrink-0 text-center">
-              <img src="${booking.qrCode}" alt="Ticket QR" class="w-20 h-20 bg-white p-1 rounded-lg border border-slate-600 shadow">
-              <span class="text-[9px] text-slate-400 block mt-1">Scan at Boarding</span>
-            </div>
-          </div>
-
+        <div class="mb-8 text-left">
+          ${BusGoUI.generateTicketHTML(booking, false)}
         </div>
 
         <!-- Action Buttons -->
         <div class="flex flex-wrap items-center justify-center gap-3 no-print">
-          <button type="button" onclick="window.print()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 text-xs font-bold flex items-center gap-2 border border-slate-700">
-            <i class="bi bi-printer"></i> Print / Download Ticket
+          <button type="button" onclick="BusGoUI.printTicket('${booking.pnr}')" class="px-5 py-2.5 rounded-xl btn-amber text-xs font-bold flex items-center gap-2 shadow-lg hover:scale-105 transition">
+            <i class="bi bi-printer-fill"></i> Print / Download Ticket (1 Page)
           </button>
-          <a href="dashboard.html?tab=tickets" class="px-5 py-2.5 rounded-xl btn-amber text-xs font-bold flex items-center gap-2">
+          <a href="dashboard.html?tab=tickets" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 text-xs font-bold flex items-center gap-2 border border-slate-700 transition">
             <i class="bi bi-speedometer2"></i> Go to Traveler Dashboard
           </a>
-          <button type="button" onclick="window.location.href='booking.html'" class="px-4 py-2.5 rounded-xl border border-slate-700 text-slate-400 hover:text-slate-100 text-xs font-semibold">
+          <button type="button" onclick="window.location.href='booking.html'" class="px-4 py-2.5 rounded-xl border border-slate-700 text-slate-400 hover:text-slate-100 text-xs font-semibold transition">
             Book Another Trip
           </button>
         </div>

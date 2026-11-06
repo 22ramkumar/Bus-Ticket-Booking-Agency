@@ -8,6 +8,14 @@ const Dashboard = {
   activeTicketFilter: 'all',
   cancellingBooking: null,
 
+  getUser() {
+    return BusGoDB.getCurrentUser() || DEFAULT_USER;
+  },
+
+  isLoggedIn() {
+    return Boolean(BusGoDB.getCurrentUser());
+  },
+
   init() {
     this.checkAuth();
     this.initTabRouting();
@@ -16,9 +24,39 @@ const Dashboard = {
   },
 
   checkAuth() {
-    const user = BusGoDB.getCurrentUser();
-    if (!user) {
-      window.location.href = 'login.html?required=true';
+    // Allow viewing dashboard without forced login
+    this.updateAuthControls();
+  },
+
+  updateAuthControls() {
+    const loggedIn = this.isLoggedIn();
+    const authActionBtn = document.getElementById('dashboard-auth-action');
+    const mobileAuthActionBtn = document.getElementById('mobile-dashboard-auth-action');
+    const headerAuthContainer = document.getElementById('dashboard-header-auth');
+
+    const authHtml = loggedIn ? `
+      <button type="button" onclick="BusGoUI.handleLogout()" class="w-full text-left flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-rose-400 hover:bg-rose-500/10 transition">
+        <i class="bi bi-box-arrow-right"></i> Sign Out
+      </button>
+    ` : `
+      <a href="login.html" class="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-amber-400 hover:bg-amber-400/10 transition">
+        <i class="bi bi-box-arrow-in-right"></i> Sign In to Account
+      </a>
+    `;
+
+    if (authActionBtn) authActionBtn.innerHTML = authHtml;
+    if (mobileAuthActionBtn) mobileAuthActionBtn.innerHTML = authHtml;
+
+    if (headerAuthContainer) {
+      if (!loggedIn) {
+        headerAuthContainer.innerHTML = `
+          <a href="login.html" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-400/30 text-amber-400 hover:bg-amber-400/10 font-bold text-xs transition">
+            <i class="bi bi-box-arrow-in-right"></i> Sign In
+          </a>
+        `;
+      } else {
+        headerAuthContainer.innerHTML = '';
+      }
     }
   },
 
@@ -60,7 +98,7 @@ const Dashboard = {
   },
 
   renderSidebarProfile() {
-    const user = BusGoDB.getCurrentUser();
+    const user = this.getUser();
     if (!user) return;
 
     const nameEls = document.querySelectorAll('.user-display-name');
@@ -99,7 +137,7 @@ const Dashboard = {
 
   // 2. Overview Tab
   renderOverviewTab(container) {
-    const user = BusGoDB.getCurrentUser();
+    const user = this.getUser();
     const bookings = BusGoDB.getBookings();
     const upcomingTrips = bookings.filter(b => b.status === 'Upcoming');
     const completedTrips = bookings.filter(b => b.status === 'Completed');
@@ -225,6 +263,9 @@ const Dashboard = {
               <div class="flex items-center gap-2">
                 <button type="button" onclick="Dashboard.openTicketModal('${nextTrip.pnr}')" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-100 text-xs font-bold transition flex items-center gap-1.5">
                   <i class="bi bi-eye"></i> View E-Ticket
+                </button>
+                <button type="button" onclick="BusGoUI.printTicket('${nextTrip.pnr}')" class="px-4 py-2 rounded-lg btn-amber text-slate-950 text-xs font-bold transition flex items-center gap-1.5">
+                  <i class="bi bi-printer-fill"></i> Print / Download
                 </button>
                 <button type="button" onclick="Dashboard.openCancellationModal('${nextTrip.pnr}')" class="px-4 py-2 rounded-lg border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 text-xs font-bold transition flex items-center gap-1.5">
                   <i class="bi bi-x-circle"></i> Cancel
@@ -440,6 +481,9 @@ const Dashboard = {
                 <button type="button" onclick="Dashboard.openTicketModal('${ticket.pnr}')" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition flex items-center gap-1.5">
                   <i class="bi bi-ticket-perforated"></i> View Pass
                 </button>
+                <button type="button" onclick="BusGoUI.printTicket('${ticket.pnr}')" class="px-3.5 py-2 rounded-xl border border-amber-400/40 text-amber-400 hover:bg-amber-400/10 text-xs font-bold transition flex items-center gap-1.5" title="Print or Download 1-Page E-Ticket">
+                  <i class="bi bi-printer-fill"></i> Download / Print
+                </button>
                 ${isUpcoming ? `
                   <button type="button" onclick="Dashboard.openCancellationModal('${ticket.pnr}')" class="px-3.5 py-2 rounded-xl border border-rose-500/40 text-rose-400 hover:bg-rose-500/10 text-xs font-bold transition flex items-center gap-1.5">
                     <i class="bi bi-x-circle"></i> Cancel
@@ -652,78 +696,35 @@ const Dashboard = {
     const modalBody = document.getElementById('view-ticket-modal-body');
     if (!modalBody) return;
 
+    // Prime the single-sheet print container immediately
+    const printContainer = document.getElementById('rk-print-container') || (() => {
+      const el = document.createElement('div');
+      el.id = 'rk-print-container';
+      document.body.appendChild(el);
+      return el;
+    })();
+    printContainer.innerHTML = BusGoUI.generateTicketHTML(booking, true);
+
     modalBody.innerHTML = `
-      <div class="p-6 md:p-8">
+      <div class="p-4 md:p-6">
         
-        <!-- Ticket Header -->
-        <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
-          <div class="flex items-center gap-3">
-            <img src="assets/images/logo.jpg" alt="RK BUS Logo" class="w-10 h-10 rounded-xl object-cover border border-amber-400/40 bg-white shadow">
-            <div>
-              <h4 class="text-base font-extrabold text-slate-100">RK BUS Express Boarding Pass</h4>
-              <p class="text-[11px] text-slate-400">Electronic Bus Ticket & Travel Receipt</p>
-            </div>
+        <!-- Header Controls -->
+        <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-xs font-bold text-slate-200">Verified Boarding Pass Preview</span>
           </div>
-          <div class="text-right">
-            <span class="text-[10px] text-slate-400 uppercase tracking-widest block">PNR NUMBER</span>
-            <span class="text-base font-mono font-black text-amber-400">${booking.pnr}</span>
-          </div>
+          <span class="text-[11px] font-mono text-amber-400 font-bold">PNR: ${booking.pnr}</span>
         </div>
 
-        <div id="printable-ticket" class="glass-card-elevated p-6 rounded-2xl border border-slate-700 mb-6">
-          
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
-            <div>
-              <span class="text-[10px] text-slate-400 uppercase block">Origin</span>
-              <p class="text-sm font-bold text-slate-100">${booking.from}</p>
-              <p class="text-xs text-amber-400 font-semibold">${booking.departureTime}</p>
-            </div>
-            <div>
-              <span class="text-[10px] text-slate-400 uppercase block">Destination</span>
-              <p class="text-sm font-bold text-slate-100">${booking.to}</p>
-              <p class="text-xs text-slate-300 font-semibold">${booking.arrivalTime}</p>
-            </div>
-            <div>
-              <span class="text-[10px] text-slate-400 uppercase block">Travel Date</span>
-              <p class="text-xs font-bold text-slate-100">${booking.departureDate}</p>
-              <p class="text-[11px] text-slate-400">${booking.duration}</p>
-            </div>
-            <div>
-              <span class="text-[10px] text-slate-400 uppercase block">Seat(s)</span>
-              <p class="text-sm font-black text-amber-400">${booking.seats.join(', ')}</p>
-              <p class="text-[10px] ${booking.status === 'Cancelled' ? 'text-rose-400' : 'text-emerald-400'} font-bold">${booking.status}</p>
-            </div>
-          </div>
+        ${BusGoUI.generateTicketHTML(booking, false)}
 
-          <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-800 text-xs mb-5 space-y-1">
-            <p class="text-slate-300"><strong class="text-slate-400">Bus Operator:</strong> ${booking.operator} (${booking.busType})</p>
-            <p class="text-slate-300"><strong class="text-slate-400">Boarding Point:</strong> ${booking.boardingPoint}</p>
-            <p class="text-slate-300"><strong class="text-slate-400">Dropping Point:</strong> ${booking.droppingPoint}</p>
-          </div>
-
-          <!-- Passengers and QR Code -->
-          <div class="flex items-center justify-between gap-4 pt-3 border-t border-slate-800">
-            <div>
-              <span class="text-[10px] text-slate-400 uppercase block mb-1">Passenger(s)</span>
-              ${booking.passengers.map(p => `
-                <p class="text-xs font-semibold text-slate-200">${p.name} (${p.gender}, ${p.age}) - Seat ${p.seat}</p>
-              `).join('')}
-              <p class="text-xs font-bold text-slate-300 mt-2">Total Amount Paid: <span class="text-amber-400">₹${booking.fareBreakdown.totalFare.toFixed(2)}</span></p>
-            </div>
-            <div class="shrink-0 text-center">
-              <img src="${booking.qrCode}" alt="Ticket QR" class="w-20 h-20 bg-white p-1 rounded-lg border border-slate-600 shadow">
-              <span class="text-[9px] text-slate-400 block mt-1">Scan at Boarding</span>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="flex items-center justify-between gap-4 pt-4 border-t border-slate-800 no-print">
-          <button type="button" onclick="BusGoUI.closeModal('view-ticket-modal')" class="px-4 py-2 rounded-xl border border-slate-700 text-slate-300 text-xs font-bold">
+        <div class="flex items-center justify-between gap-4 pt-4 mt-4 border-t border-slate-800 no-print">
+          <button type="button" onclick="BusGoUI.closeModal('view-ticket-modal')" class="px-4 py-2.5 rounded-xl border border-slate-700 hover:bg-slate-800 text-slate-300 text-xs font-bold transition">
             Close
           </button>
-          <button type="button" onclick="window.print()" class="px-5 py-2.5 rounded-xl btn-amber text-xs font-bold flex items-center gap-2">
-            <i class="bi bi-printer-fill"></i> Print / Download Ticket
+          <button type="button" onclick="BusGoUI.printTicket('${booking.pnr}')" class="px-5 py-2.5 rounded-xl btn-amber text-xs font-bold flex items-center gap-2 shadow-lg hover:scale-105 transition">
+            <i class="bi bi-printer-fill text-sm"></i> Print / Download Ticket (1 Page)
           </button>
         </div>
 
@@ -783,7 +784,7 @@ const Dashboard = {
 
   // 7. Profile & Saved Passengers Tab
   renderProfileTab(container) {
-    const user = BusGoDB.getCurrentUser();
+    const user = this.getUser();
     const savedPassengers = BusGoDB.getSavedPassengers();
 
     container.innerHTML = `
@@ -811,7 +812,7 @@ const Dashboard = {
               </div>
               <div>
                 <label class="font-bold text-slate-300 block mb-1">Home City</label>
-                <input type="text" id="prof-city" value="${user.city || 'New York, NY'}" class="w-full form-control-busgo rounded-lg px-3 py-2 text-xs">
+                <input type="text" id="prof-city" value="${user.city || 'Chennai, TN'}" class="w-full form-control-busgo rounded-lg px-3 py-2 text-xs">
               </div>
             </div>
 
@@ -878,7 +879,7 @@ const Dashboard = {
 
   handleProfileSave(e) {
     e.preventDefault();
-    const user = BusGoDB.getCurrentUser();
+    const user = this.getUser();
     user.name = document.getElementById('prof-name').value.trim();
     user.email = document.getElementById('prof-email').value.trim();
     user.phone = document.getElementById('prof-phone').value.trim();
@@ -886,6 +887,7 @@ const Dashboard = {
 
     BusGoDB.updateCurrentUser(user);
     this.renderSidebarProfile();
+    this.updateAuthControls();
     BusGoUI.toast('Profile updated successfully!', 'success');
   },
 
