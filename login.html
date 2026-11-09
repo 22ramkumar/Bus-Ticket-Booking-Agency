@@ -113,7 +113,7 @@
         <div>
           <label class="font-bold text-slate-300 block mb-1">Full Name *</label>
           <div class="relative">
-            <input type="text" id="reg-name" required placeholder="Ramkumar R." class="w-full form-control-busgo rounded-xl pl-9 pr-3 py-2.5 text-xs font-medium">
+            <input type="text" id="reg-name" required placeholder="Ramkumar K" class="w-full form-control-busgo rounded-xl pl-9 pr-3 py-2.5 text-xs font-medium">
             <i class="bi bi-person absolute left-3 top-2.5 text-slate-400 text-sm"></i>
           </div>
         </div>
@@ -230,8 +230,11 @@
         const res = BusGoDB.login('ramkumar@rkbus.com', 'Travel@123') || BusGoDB.login('traveler@rkbus.com', 'Travel@123');
         if (res.success) {
           BusGoUI.toast(`Welcome back, ${res.user.name}!`, 'success', 'Login Successful');
+          sessionStorage.setItem('rkbus_intentional_home', 'true');
+          sessionStorage.setItem('rkbus_active_page', 'index.html');
+          sessionStorage.setItem('rkbus_active_page_name', 'index.html');
           setTimeout(() => {
-            window.location.href = 'dashboard.html';
+            window.location.href = 'index.html';
           }, 600);
         }
       },
@@ -244,8 +247,11 @@
         const res = BusGoDB.login(email, pass);
         if (res.success) {
           BusGoUI.toast(`Welcome back, ${res.user.name}!`, 'success');
+          sessionStorage.setItem('rkbus_intentional_home', 'true');
+          sessionStorage.setItem('rkbus_active_page', 'index.html');
+          sessionStorage.setItem('rkbus_active_page_name', 'index.html');
           setTimeout(() => {
-            window.location.href = 'dashboard.html';
+            window.location.href = 'index.html';
           }, 600);
         } else {
           BusGoUI.toast(res.message, 'error', 'Login Failed');
@@ -262,8 +268,11 @@
         const res = BusGoDB.register({ name, email, phone, password });
         if (res.success) {
           BusGoUI.toast(`Account created! Welcome, ${res.user.name}.`, 'success');
+          sessionStorage.setItem('rkbus_intentional_home', 'true');
+          sessionStorage.setItem('rkbus_active_page', 'index.html');
+          sessionStorage.setItem('rkbus_active_page_name', 'index.html');
           setTimeout(() => {
-            window.location.href = 'dashboard.html';
+            window.location.href = 'index.html';
           }, 600);
         } else {
           BusGoUI.toast(res.message, 'error');

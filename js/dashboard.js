@@ -860,19 +860,6 @@ const Dashboard = {
           </div>
         </div>
 
-        <!-- Demo Reset Options -->
-        <div class="glass-card rounded-2xl p-6 border-dashed border-slate-700">
-          <div class="flex items-center justify-between flex-wrap gap-4">
-            <div>
-              <h5 class="text-sm font-bold text-slate-100">Reset Template Demo Data</h5>
-              <p class="text-xs text-slate-400">Restore factory sample bookings, routes, and seed passengers.</p>
-            </div>
-            <button type="button" onclick="Dashboard.handleResetData()" class="px-4 py-2 rounded-xl border border-rose-500/40 text-rose-400 hover:bg-rose-500/10 text-xs font-bold transition">
-              <i class="bi bi-arrow-counterclockwise"></i> Reset Demo Data
-            </button>
-          </div>
-        </div>
-
       </div>
     `;
   },

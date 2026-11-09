@@ -739,7 +739,7 @@ const BookingEngine = {
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div>
             <label class="text-xs text-slate-400 block mb-1">Full Name *</label>
-            <input type="text" id="pass-name-${idx}" required placeholder="e.g. Ramkumar R." class="w-full form-control-busgo rounded-lg px-3 py-2 text-xs font-medium" value="${idx === 0 && currentUser ? currentUser.name : ''}">
+            <input type="text" id="pass-name-${idx}" required placeholder="e.g. Ramkumar K" class="w-full form-control-busgo rounded-lg px-3 py-2 text-xs font-medium" value="${idx === 0 && currentUser ? currentUser.name : ''}">
           </div>
           <div>
             <label class="text-xs text-slate-400 block mb-1">Age *</label>

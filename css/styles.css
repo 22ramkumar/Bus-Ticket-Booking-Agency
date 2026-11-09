@@ -1515,3 +1515,21 @@ html[data-theme="light"] [class*="card-image-overlay"] i {
   color: #FBBF24 !important;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
 }
+
+/* Stepper Box Single Color Guarantee (Dark & Light Mode) */
+.stepper-box,
+html[data-theme="light"] .stepper-box,
+html[data-theme="dark"] .stepper-box {
+  background-color: #F59E0B !important;
+  color: #090D16 !important;
+  border-color: transparent !important;
+  box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.35) !important;
+}
+
+/* Running Numbers Counter Styles */
+.counter-number {
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
+  min-width: 1ch;
+  transition: transform 0.2s ease;
+}

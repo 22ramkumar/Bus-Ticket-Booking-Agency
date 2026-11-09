@@ -1026,19 +1026,23 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-800/80">
         
         <!-- Col 1: Brand Info -->
-        <div class="lg:col-span-2 space-y-4">
-          <a href="index.html" class="flex items-center gap-3">
-            <img src="assets/images/logo.jpg" alt="RK BUS Logo" class="w-10 h-10 rounded-xl object-cover border border-amber-400/30 bg-white">
-            <div>
-              <span class="text-xl font-black text-slate-100">RK</span>
-              <span class="text-xl font-black text-amber-400">BUS</span>
-              <span class="block text-[8px] tracking-widest text-slate-400 font-bold uppercase">Tamil Nadu Express</span>
+        <div class="lg:col-span-2 flex flex-col justify-between">
+          <div>
+            <div class="h-10 flex items-center mb-4">
+              <a href="index.html" class="flex items-center gap-3">
+                <img src="assets/images/logo.jpg" alt="RK BUS Logo" class="w-10 h-10 rounded-xl object-cover border border-amber-400/30 bg-white">
+                <div>
+                  <span class="text-xl font-black text-slate-100">RK</span>
+                  <span class="text-xl font-black text-amber-400">BUS</span>
+                  <span class="block text-[8px] tracking-widest text-slate-400 font-bold uppercase">Tamil Nadu Express</span>
+                </div>
+              </a>
             </div>
-          </a>
-          <p class="text-slate-400 leading-relaxed max-w-sm">
-            Tamil Nadu's premier intercity bus network connecting 38 districts with executive Volvo sleepers, panoramic hill coaches, and sacred pilgrimage circuits.
-          </p>
-          <div class="space-y-1 text-slate-300 text-[11px]">
+            <p class="text-slate-400 leading-relaxed max-w-sm mb-4">
+              Tamil Nadu's premier intercity bus network connecting 38 districts with executive Volvo sleepers, panoramic hill coaches, and sacred pilgrimage circuits.
+            </p>
+          </div>
+          <div class="space-y-1.5 text-slate-300 text-[11px] pt-1">
             <p><i class="bi bi-geo-alt-fill text-amber-400 mr-1.5"></i> Central Hub: KCBT Kilambakkam Bay 4, Chennai, TN</p>
             <p><i class="bi bi-telephone-fill text-amber-400 mr-1.5"></i> 24x7 Traveler Support: +91 44 2841 9000</p>
             <p><i class="bi bi-envelope-fill text-amber-400 mr-1.5"></i> bookings@rkbus.com</p>
@@ -1046,38 +1050,44 @@
         </div>
 
         <!-- Col 2: Navigation -->
-        <div>
-          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-100 mb-4">Explore Portals</h4>
-          <ul class="space-y-2">
-            <li><a href="index.html" class="hover:text-amber-400 transition">Home 1 (Express Network)</a></li>
-            <li><a href="home2.html" class="text-amber-400 font-bold transition">Home 2 (Scenic & Temple)</a></li>
-            <li><a href="routes.html" class="hover:text-amber-400 transition">Routes & Fares</a></li>
-            <li><a href="offers.html" class="hover:text-amber-400 transition">Deals & Coupons</a></li>
-            <li><a href="contact.html" class="hover:text-amber-400 transition">Contact & Help</a></li>
+        <div class="flex flex-col justify-between">
+          <div class="h-10 flex items-center mb-4">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-100">Explore Portals</h4>
+          </div>
+          <ul class="space-y-3.5 text-xs flex-1 flex flex-col justify-between">
+            <li><a href="index.html" class="hover:text-amber-400 transition block">Home 1 (Express Network)</a></li>
+            <li><a href="home2.html" class="text-amber-400 font-bold transition block">Home 2 (Scenic & Temple)</a></li>
+            <li><a href="routes.html" class="hover:text-amber-400 transition block">Routes & Fares</a></li>
+            <li><a href="offers.html" class="hover:text-amber-400 transition block">Deals & Coupons</a></li>
+            <li><a href="contact.html" class="hover:text-amber-400 transition block">Contact & Help</a></li>
           </ul>
         </div>
 
         <!-- Col 3: Popular Temple Routes -->
-        <div>
-          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-100 mb-4">Temple Corridors</h4>
-          <ul class="space-y-2">
-            <li><a href="booking.html?from=Chennai,%20TN&to=Madurai,%20TN&autoseat=true" class="hover:text-amber-400 transition">Chennai ➔ Madurai</a></li>
-            <li><a href="booking.html?from=Coimbatore,%20TN&to=Ooty%20(Udhagamandalam),%20TN&autoseat=true" class="hover:text-amber-400 transition">Coimbatore ➔ Ooty</a></li>
-            <li><a href="booking.html?from=Chennai,%20TN&to=Tiruchirappalli%20(Trichy),%20TN&autoseat=true" class="hover:text-amber-400 transition">Chennai ➔ Trichy Rockfort</a></li>
-            <li><a href="booking.html" class="hover:text-amber-400 transition">Chennai ➔ Rameshwaram</a></li>
-            <li><a href="booking.html" class="hover:text-amber-400 transition">Chennai ➔ Kanyakumari</a></li>
+        <div class="flex flex-col justify-between">
+          <div class="h-10 flex items-center mb-4">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-100">Temple Corridors</h4>
+          </div>
+          <ul class="space-y-3.5 text-xs flex-1 flex flex-col justify-between">
+            <li><a href="booking.html?from=Chennai,%20TN&to=Madurai,%20TN&autoseat=true" class="hover:text-amber-400 transition block">Chennai ➔ Madurai</a></li>
+            <li><a href="booking.html?from=Coimbatore,%20TN&to=Ooty%20(Udhagamandalam),%20TN&autoseat=true" class="hover:text-amber-400 transition block">Coimbatore ➔ Ooty</a></li>
+            <li><a href="booking.html?from=Chennai,%20TN&to=Tiruchirappalli%20(Trichy),%20TN&autoseat=true" class="hover:text-amber-400 transition block">Chennai ➔ Trichy Rockfort</a></li>
+            <li><a href="booking.html" class="hover:text-amber-400 transition block">Chennai ➔ Rameshwaram</a></li>
+            <li><a href="booking.html" class="hover:text-amber-400 transition block">Chennai ➔ Kanyakumari</a></li>
           </ul>
         </div>
 
         <!-- Col 4: Safety & Legal -->
-        <div>
-          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-100 mb-4">Safety & Policies</h4>
-          <ul class="space-y-2">
-            <li><a href="terms.html" class="hover:text-amber-400 transition">Terms of Service</a></li>
-            <li><a href="terms.html#cancellation" class="hover:text-amber-400 transition">Instant Refund Policy</a></li>
-            <li><a href="terms.html#ladies" class="hover:text-amber-400 transition">Ladies Berth Safety</a></li>
-            <li><a href="terms.html#luggage" class="hover:text-amber-400 transition">Baggage Allowance</a></li>
-            <li><a href="dashboard.html" class="hover:text-amber-400 transition">Traveler Dashboard</a></li>
+        <div class="flex flex-col justify-between">
+          <div class="h-10 flex items-center mb-4">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-100">Safety & Policies</h4>
+          </div>
+          <ul class="space-y-3.5 text-xs flex-1 flex flex-col justify-between">
+            <li><a href="terms.html" class="hover:text-amber-400 transition block">Terms of Service</a></li>
+            <li><a href="terms.html#cancellation" class="hover:text-amber-400 transition block">Instant Refund Policy</a></li>
+            <li><a href="terms.html#ladies" class="hover:text-amber-400 transition block">Ladies Berth Safety</a></li>
+            <li><a href="terms.html#luggage" class="hover:text-amber-400 transition block">Baggage Allowance</a></li>
+            <li><a href="dashboard.html" class="hover:text-amber-400 transition block">Traveler Dashboard</a></li>
           </ul>
         </div>
 

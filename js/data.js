@@ -500,7 +500,7 @@ const DEFAULT_PROMOS = [
 
 const DEFAULT_USER = {
   id: "user-1001",
-  name: "Ramkumar R.",
+  name: "Ramkumar K",
   email: "ramkumar@rkbus.com",
   password: "Travel@123", // Demo traveler
   phone: "+91 98765 43210",
@@ -519,7 +519,7 @@ const DEFAULT_USER = {
 const DEFAULT_SAVED_PASSENGERS = [
   {
     id: "pass-1",
-    name: "Ramkumar R.",
+    name: "Ramkumar K",
     age: 29,
     gender: "Male",
     idType: "Aadhaar Card",
@@ -570,7 +570,7 @@ const DEFAULT_BOOKINGS = [
     droppingPoint: "Gandhipuram Central Omni Bus Stand",
     seats: ["L12", "L13"],
     passengers: [
-      { name: "Ramkumar R.", age: 29, gender: "Male", seat: "L12" },
+      { name: "Ramkumar K", age: 29, gender: "Male", seat: "L12" },
       { name: "Anitha Ramkumar", age: 27, gender: "Female", seat: "L13" }
     ],
     fareBreakdown: {
@@ -602,7 +602,7 @@ const DEFAULT_BOOKINGS = [
     droppingPoint: "Kilambakkam Bus Terminus (KCBT)",
     seats: ["S14"],
     passengers: [
-      { name: "Ramkumar R.", age: 29, gender: "Male", seat: "S14" }
+      { name: "Ramkumar K", age: 29, gender: "Male", seat: "S14" }
     ],
     fareBreakdown: {
       baseFare: 550.00,
@@ -633,7 +633,7 @@ const DEFAULT_BOOKINGS = [
     droppingPoint: "Mattuthavani MGR Bus Stand",
     seats: ["L05"],
     passengers: [
-      { name: "Ramkumar R.", age: 29, gender: "Male", seat: "L05" }
+      { name: "Ramkumar K", age: 29, gender: "Male", seat: "L05" }
     ],
     fareBreakdown: {
       baseFare: 850.00,
@@ -710,12 +710,12 @@ const BusGoDB = {
       return;
     }
 
-    // Ensure any previously cached user name with Alex Morgan or old avatar is updated to Ramkumar R. and authentic Indian profile
+    // Ensure any previously cached user name is updated to Ramkumar K and authentic profile
     const currentUser = this.getCurrentUser();
     if (currentUser) {
       let needsUpdate = false;
-      if (currentUser.name === 'Alex Morgan' || currentUser.name.includes('Morgan')) {
-        currentUser.name = 'Ramkumar R.';
+      if (!currentUser.name || currentUser.name.includes('Morgan') || currentUser.name === 'Ramkumar R.' || currentUser.name === 'Ramkumar') {
+        currentUser.name = 'Ramkumar K';
         currentUser.email = 'ramkumar@rkbus.com';
         needsUpdate = true;
       }
@@ -727,6 +727,15 @@ const BusGoDB = {
         this.updateCurrentUser(currentUser);
       }
     }
+
+    // Also migrate saved passengers list in localStorage if needed
+    try {
+      const savedPass = this.getSavedPassengers();
+      if (savedPass && savedPass.length > 0 && (savedPass[0].name === 'Ramkumar R.' || savedPass[0].name === 'Alex Morgan')) {
+        savedPass[0].name = 'Ramkumar K';
+        localStorage.setItem(BUSGO_STORAGE_KEYS.SAVED_PASSENGERS, JSON.stringify(savedPass));
+      }
+    } catch(e) {}
 
     if (!localStorage.getItem(BUSGO_STORAGE_KEYS.ROUTES)) {
       localStorage.setItem(BUSGO_STORAGE_KEYS.ROUTES, JSON.stringify(DEFAULT_POPULAR_ROUTES));

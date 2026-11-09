@@ -3,11 +3,26 @@
  * Theme, RTL, Session Navbar, Toasts, City Swap, and Global UI interactions
  */
 
+// Immediate active subpage registration for refresh and session persistence
+(function() {
+  try {
+    const rawPath = window.location.pathname;
+    const pageName = rawPath.split('/').filter(Boolean).pop() || 'index.html';
+    const fullUrl = pageName + window.location.search + window.location.hash;
+    if (pageName && pageName !== 'index.html') {
+      sessionStorage.setItem('rkbus_active_page', fullUrl);
+      sessionStorage.setItem('rkbus_active_page_name', pageName);
+    }
+  } catch (e) {}
+})();
+
 const BusGoUI = {
   init() {
+    this.initPagePersistence();
     this.initTheme();
     this.initRTL();
     this.initNavbar();
+    this.initCounterAnimation();
     this.initCitySwapButtons();
     this.initDatePickers();
     this.initCopyButtons();
@@ -15,6 +30,108 @@ const BusGoUI = {
     this.initAccordions();
     this.initVideoPlayer();
     this.initPrintContainer();
+  },
+
+  // Navigation Persistence (Restores active subpage on refresh / Live Server reload)
+  initPagePersistence() {
+    try {
+      const pathname = window.location.pathname;
+      const pageName = pathname.split('/').filter(Boolean).pop() || 'index.html';
+      const fullUrl = pageName + window.location.search + window.location.hash;
+
+      if (pageName && pageName !== 'index.html') {
+        sessionStorage.setItem('rkbus_active_page', fullUrl);
+        sessionStorage.setItem('rkbus_active_page_name', pageName);
+      } else if (pageName === 'index.html' || pathname === '/') {
+        if (sessionStorage.getItem('rkbus_intentional_home') === 'true' || !sessionStorage.getItem('rkbus_active_page')) {
+          sessionStorage.setItem('rkbus_active_page', 'index.html');
+          sessionStorage.setItem('rkbus_active_page_name', 'index.html');
+        }
+      }
+
+      // Capture link clicks globally to track intentional home navigation vs subpage transitions
+      document.addEventListener('click', (e) => {
+        const link = e.target.closest('a');
+        if (!link) return;
+        const href = (link.getAttribute('href') || '').trim();
+        if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+
+        if (href === 'index.html' || href === '/' || href.startsWith('index.html?') || href.startsWith('index.html#')) {
+          sessionStorage.setItem('rkbus_intentional_home', 'true');
+          sessionStorage.setItem('rkbus_active_page', href || 'index.html');
+          sessionStorage.setItem('rkbus_active_page_name', 'index.html');
+        } else {
+          sessionStorage.removeItem('rkbus_intentional_home');
+          sessionStorage.setItem('rkbus_active_page', href);
+          const targetName = href.split('?')[0].split('#')[0].split('/').filter(Boolean).pop() || href;
+          sessionStorage.setItem('rkbus_active_page_name', targetName);
+        }
+      }, { capture: true });
+
+      // Handle pageshow / bfcache restoration
+      window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+          const pName = window.location.pathname.split('/').filter(Boolean).pop() || 'index.html';
+          sessionStorage.setItem('rkbus_active_page', pName + window.location.search + window.location.hash);
+          sessionStorage.setItem('rkbus_active_page_name', pName);
+        }
+      });
+    } catch (e) {}
+  },
+
+  // Running Number Counters (Count-up animation when scrolled into view)
+  initCounterAnimation() {
+    const counterElements = document.querySelectorAll('[data-counter-target]');
+    if (!counterElements.length) return;
+
+    const animateCounter = (el) => {
+      if (el.dataset.counterStarted === 'true') return;
+      el.dataset.counterStarted = 'true';
+
+      const target = parseFloat(el.getAttribute('data-counter-target'));
+      const prefix = el.getAttribute('data-counter-prefix') || '';
+      const suffix = el.getAttribute('data-counter-suffix') || '';
+      const decimals = parseInt(el.getAttribute('data-counter-decimals') || '0', 10);
+      const duration = parseInt(el.getAttribute('data-counter-duration') || '1800', 10);
+
+      const startTime = performance.now();
+      const easeOutCubic = (t) => (--t) * t * t + 1;
+
+      // Start display at zero
+      el.textContent = prefix + (0).toFixed(decimals) + suffix;
+
+      const step = (now) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = easeOutCubic(progress);
+        const currentVal = eased * target;
+
+        el.textContent = prefix + (decimals > 0 ? currentVal.toFixed(decimals) : Math.floor(currentVal)) + suffix;
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          el.textContent = prefix + (decimals > 0 ? target.toFixed(decimals) : target) + suffix;
+        }
+      };
+
+      requestAnimationFrame(step);
+    };
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            animateCounter(entry.target);
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+
+      counterElements.forEach(el => observer.observe(el));
+    } else {
+      counterElements.forEach(el => animateCounter(el));
+    }
   },
 
   // 1. Theme Management (Default Dark)
